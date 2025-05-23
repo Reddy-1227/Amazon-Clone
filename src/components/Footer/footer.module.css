@@ -139,12 +139,12 @@
   gap: 14px 24px;
   background: #131a22;
   color: #fff;
-  padding: 32px 60px 16px 60px; /* Add left/right padding */
+  padding: 32px 60px 16px 60px; 
   justify-items: start;
   border-bottom: 1px solid #3a4553;
 }
 .footerServicesGrid > div {
-  font-size: 0.85rem; /* Smaller font size */
+  font-size: 0.85rem; 
   color: #ddd;
   min-width: 120px;
   margin-bottom: 0;
@@ -154,7 +154,7 @@
 .footerServicesGrid > div > div {
   color: #fff;
   font-weight: 600;
-  font-size: 0.93rem; /* Slightly smaller title */
+  font-size: 0.93rem; 
   margin-bottom: 2px;
   cursor: pointer;
   transition: text-decoration 0.2s;

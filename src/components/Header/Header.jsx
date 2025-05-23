@@ -13,7 +13,7 @@ function Header() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [headerState, setHeaderState] = useState("visible"); // 'visible', 'hidden', 'topFixed'
-  const headerRef = useRef(null); // Ref for the header element
+  const headerRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -81,7 +81,7 @@ function Header() {
 
   return (
     <header
-      ref={headerRef} // Assign ref here
+      ref={headerRef}
       className={`
         ${styles.headerWrapper}
         ${headerState === "hidden" ? styles.headerHidden : ""}
@@ -94,7 +94,7 @@ function Header() {
           <button
             className={`${styles.menuBtn} ${
               isMobile ? "" : styles.hideOnDesktopFlex
-            }`} // Hide hamburger on desktop
+            }`}
             onClick={() => setShowMenu(!showMenu)}
           >
             <FaBars />
