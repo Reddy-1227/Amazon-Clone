@@ -96,19 +96,21 @@
 
 @media (max-width: 480px) {
   .categoryWrapper {
-    gap: 10px;
-    margin-top: -50px;
+    gap: 15px;
+    margin-top: -70px;
     align-items: center;
   }
   .card {
     min-width: 30vw;
     min-height: 120px;
     padding: 8px 2px 6px 2px;
+    padding-bottom: 10px;
     border-radius: 8px;
   }
   .cardImage {
-    width: 20vw;
+    width: 80%;
     height: 80px;
+    border-radius: 6px;
   }
   .cardTitle {
     font-size: 0.95rem;
