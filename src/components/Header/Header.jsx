@@ -3,6 +3,7 @@ import styles from "./header.module.css";
 import { FaSearch, FaBars, FaMapMarkerAlt, FaUser } from "react-icons/fa";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { FiChevronDown } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import nav_logo from "../../assets/Images/nav_log.png";
 import usa_flag from "../../assets/Images/usa_flag.png";
 
@@ -99,7 +100,9 @@ function Header() {
           >
             <FaBars />
           </button>
-          <img src={nav_logo} alt="Amazon Logo" className={styles.logo} />
+          <Link to="/" className={styles.logoLink}>
+            <img src={nav_logo} alt="Amazon Logo" className={styles.logo} />
+          </Link>
           {/* DeliverTo for DESKTOP - hidden on mobile via CSS */}
           <div className={`${styles.deliverTo} ${styles.deliverToDesktop}`}>
             <FaMapMarkerAlt className={styles.locationIcon} />
@@ -156,41 +159,45 @@ function Header() {
               className={`${styles.accountIcon} ${styles.showOnMobile}`}
             />
             {isMobile ? (
-              <span className={`${styles.boldText} ${styles.signInMobile}`}>
+              <Link
+                to="/auth/signin"
+                className={`${styles.boldText} ${styles.signInMobile}`}
+              >
                 Sign In{" "}
                 <FiChevronDown className={styles.chevronIconMobileSignIn} />
-              </span>
+              </Link>
             ) : (
               <>
                 <span className={styles.smallText}>Hello, sign in</span>
-                <span className={styles.boldText}>
+                <Link to="/auth/signin" className={styles.boldText}>
                   Account & Lists{" "}
                   <FiChevronDown className={styles.chevronIcon} />
-                </span>
+                </Link>
               </>
             )}
             {showAccountDropdown && (
               <div className={styles.dropdownMenu}>
-                <div>Your Account</div>
-                <div>Your Orders</div>
-                <div>Sign Out</div>
+                <Link to="/auth/signin">Your Account</Link>
+                <Link to="/orders">Your Orders</Link>
+                <span>Sign Out</span>
               </div>
             )}
           </div>
 
           <div className={`${styles.ordersWrap} ${styles.hideOnMobile}`}>
             <span className={styles.smallText}>Returns</span>
-            <span className={styles.boldText}>& Orders</span>
+            <Link to="/orders" className={styles.boldText}>
+              & Orders
+            </Link>
           </div>
-          {/* Cart - Remains */}
-          <div className={styles.cartWrap}>
+          {/* Cart  */}
+          <Link to="/cart" className={styles.cartWrap}>
             <HiOutlineShoppingCart className={styles.cartIcon} />
             <span className={styles.cartCount}>0</span>
             <span className={styles.cartText}>Cart</span>
-          </div>
+          </Link>
         </div>
       </div>
-
       {/* Secondary Nav Links (Scrollable on Mobile) */}
       <nav
         className={`
@@ -236,24 +243,25 @@ function Header() {
       {showMenu && (
         <div className={styles.mobileMenu}>
           <div className={styles.mobileMenuHeader}>
-            <FaUser className={styles.accountIcon} />{" "}
-            {/* Icon in menu header */}
-            <h3>Hello, Sign In</h3>
+            <FaUser className={styles.accountIcon} />
+            <h3>
+              Hello, <Link to="/auth/signin">Sign In</Link>
+            </h3>
           </div>
-          <span className={styles.navLink}>Home</span>
+          <Link to="/" className={styles.navLink}>
+            Home
+          </Link>
           <span className={styles.navLink}>Shop by Department</span>
-          <span className={styles.navLink}>Today's Deals</span>
-          {/* Add items from hidden top bar sections */}
+          <Link to="/results" className={styles.navLink}>
+            Today's Deals
+          </Link>
           <div className={styles.mobileMenuItem}>
-            {" "}
-            {/* Orders */}
-            <span className={styles.navLink}>Your Orders</span>
+            <Link to="/orders" className={styles.navLink}>
+              Your Orders
+            </Link>
           </div>
           <div className={styles.mobileMenuItem}>
-            {" "}
-            {/* Language */}
-            <span className={styles.navLink}>Language: EN</span>{" "}
-            {/* Simplified or full dropdown */}
+            <span className={styles.navLink}>Language: EN</span>
           </div>
           <span className={styles.navLink}>Customer Service</span>
           <span className={styles.navLink}>Settings</span>

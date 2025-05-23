@@ -252,6 +252,7 @@ html {
   position: relative;
   flex-direction: row;
   gap: 2px;
+  text-decoration: none !important;
 }
 .cartIcon {
   font-size: 2rem;
@@ -262,6 +263,7 @@ html {
   margin-left: 4px;
   display: inline;
   font-size: 1rem;
+  color: #fff;
 }
 .cartCount {
   position: absolute;
@@ -580,4 +582,60 @@ html {
 
 .hideOnDesktopFlex {
   display: none !important;
+}
+
+.logoLink {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.boldText,
+.smallText {
+  color: #fff !important;
+}
+
+.accountWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  border: 1px solid transparent;
+  height: 40px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.accountWrap > span,
+.accountWrap > a {
+  display: block;
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.accountWrap > a {
+  margin-top: 2px;
+}
+
+.dropdownMenu a {
+  color: #111 !important;
+  display: block;
+  padding: 6px 0;
+  text-decoration: none;
+}
+
+.cartText,
+.boldText {
+  text-decoration: none !important;
+}
+
+.cartWrap a,
+.cartText,
+.ordersWrap a {
+  text-decoration: none !important;
+  color: #fff !important;
+}
+
+.cartWrap a:visited {
+  text-decoration: none !important;
+  color: #fff !important;
 }
