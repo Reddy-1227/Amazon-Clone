@@ -112,14 +112,18 @@ function Header() {
 
         {/* Center: Search Bar */}
         <form className={styles.searchBar}>
-          <select className={styles.searchDropdown}>
+          <select className={styles.searchDropdown} title="Search category">
             <option>All</option>
             <option>Books</option>
             <option>Electronics</option>
             <option>Clothing</option>
           </select>
-          <input className={styles.searchInput} placeholder="Search Amazon" />
-          <button className={styles.searchBtn} type="submit">
+          <input
+            className={styles.searchInput}
+            placeholder="Search Amazon"
+            aria-label="Search Amazon"
+          />
+          <button className={styles.searchBtn} type="submit" title="Search">
             <FaSearch />
           </button>
         </form>

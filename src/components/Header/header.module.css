@@ -2,7 +2,7 @@
   width: 100%;
   background: #131921;
   color: #fff;
-  transition: transform 1s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 
 .topRow {
@@ -106,6 +106,31 @@
   cursor: pointer;
   text-align: center;
   font-family: inherit;
+  /* Accessibility: add title for screen readers */
+}
+
+/* Add cross-browser support for text-size-adjust */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Add cross-browser support for user-select */
+* {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+/* Add cross-browser support for backdrop-filter if used */
+.backdropFilter {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Add cross-browser support for height: stretch if used */
+.stretchHeight {
+  height: -webkit-fill-available;
+  height: stretch;
 }
 .searchInput {
   flex: 1 1 0%;
