@@ -4,6 +4,7 @@ import styles from "./hero.module.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { img as heroImages } from "./img/data";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import img1Webp from "./img/img-1.webp";
 
 const Hero = () => {
   const total = heroImages.length;
@@ -65,7 +66,28 @@ const Hero = () => {
       >
         {heroImages.map((img, idx) => (
           <div key={idx}>
-            <img src={img} alt={`Amazon hero ${idx + 1}`} />
+            {idx === 0 ? (
+              <picture>
+                <source srcSet={img1Webp} type="image/webp" />
+                <img
+                  src={img}
+                  alt={`Amazon hero ${idx + 1}`}
+                  width="1200"
+                  height="500"
+                  loading="eager"
+                  style={{ width: "100%", height: "auto" }}
+                />
+              </picture>
+            ) : (
+              <img
+                src={img}
+                alt={`Amazon hero ${idx + 1}`}
+                width="1200"
+                height="500"
+                loading="lazy"
+                style={{ width: "100%", height: "auto" }}
+              />
+            )}
           </div>
         ))}
       </Carousel>
