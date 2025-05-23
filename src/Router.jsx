@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Landing from "./Pages/Landing/Landing";
-import Signin from "./Pages/Auth/Signin";
-import Signup from "./Pages/Auth/Signup";
-import Cart from "./Pages/Cart/Cart";
-import Orders from "./Pages/Orders/Orders";
-import Payment from "./Pages/Payment/Payment";
-import ProductDetail from "./Pages/ProductDetial/ProductDetail";
-import Results from "./Pages/Results/Results";
+import Landing from "./Pages/Landing/";
+import { Signin } from "./Pages/Auth/";
+import { Signup } from "./Pages/Auth/";
+import Cart from "./Pages/Cart/";
+import Orders from "./Pages/Orders/";
+import Payment from "./Pages/Payment/";
+import ProductDetail from "./Pages/ProductDetial/";
+import Results from "./Pages/Results/";
 
 function AppRouter() {
   return (
@@ -21,6 +21,7 @@ function AppRouter() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/category/:categoryName" element={<Results />} />
         <Route path="/results" element={<Results />} />
       </Routes>
     </Router>
