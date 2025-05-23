@@ -6,7 +6,7 @@ import { Signup } from "./Pages/Auth/";
 import Cart from "./Pages/Cart/";
 import Orders from "./Pages/Orders/";
 import Payment from "./Pages/Payment/";
-import ProductDetail from "./Pages/ProductDetial/";
+import ProductDetail from "./Pages/ProductDetail";
 import Results from "./Pages/Results/";
 
 function AppRouter() {

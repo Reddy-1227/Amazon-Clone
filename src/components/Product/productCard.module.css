@@ -7,7 +7,11 @@
   align-items: center;
   margin: 0 10px;
   position: relative;
+  text-decoration: none;
   transition: box-shadow 0.3s, transform 0.3s;
+}
+.card > * {
+  text-decoration: none;
 }
 .card:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), 0 1.5px 6px rgba(0, 0, 0, 0.1);
@@ -26,6 +30,11 @@
   max-width: 100%;
   max-height: 200px;
   object-fit: contain;
+  cursor: pointer;
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  transition: transform 0.15s ease-out;
 }
 .viewBtn,
 .addToCartBtn {
@@ -36,9 +45,10 @@
   pointer-events: none;
   transition: opacity 0.25s, top 0.25s;
   z-index: 2;
-  min-width: 90px;
+  width: 90px;
+  min-width: 100px;
   font-size: 0.85rem;
-  padding: 5px 12px;
+  padding: 6px;
   margin-bottom: 4px;
   display: flex;
   align-items: center;
@@ -123,7 +133,7 @@
 .price {
   font-size: 1rem;
   font-weight: 700;
-  color: #222;
+  color: #222 !important;
 }
 .oldPrice {
   font-size: 0.9rem;
