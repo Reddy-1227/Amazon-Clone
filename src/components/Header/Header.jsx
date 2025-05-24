@@ -6,6 +6,7 @@ import { FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import nav_logo from "../../assets/Images/nav_log.png";
 import usa_flag from "../../assets/Images/usa_flag.png";
+import { useCart } from "../DataProvider/DataProvider";
 
 function Header() {
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
@@ -15,6 +16,7 @@ function Header() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [headerState, setHeaderState] = useState("visible"); // 'visible', 'hidden', 'topFixed'
   const headerRef = useRef(null);
+  const { cart } = useCart();
 
   useEffect(() => {
     const handleResize = () => {
@@ -193,7 +195,9 @@ function Header() {
           {/* Cart  */}
           <Link to="/cart" className={styles.cartWrap}>
             <HiOutlineShoppingCart className={styles.cartIcon} />
-            <span className={styles.cartCount}>0</span>
+            <span className={styles.cartCount}>
+              {cart.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
             <span className={styles.cartText}>Cart</span>
           </Link>
         </div>

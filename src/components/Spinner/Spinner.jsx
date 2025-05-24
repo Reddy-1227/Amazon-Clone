@@ -1,11 +1,11 @@
 import React from "react";
-import spinner from "../../assets/Images/loading.gif";
+import { ClipLoader } from "react-spinners";
 import styles from "./Spinner.module.css";
 
 function Spinner() {
   return (
     <div className={styles.spinnerWrapper}>
-      <img src={spinner} alt="Loading..." className={styles.spinnerImg} />
+      <ClipLoader color="#ff9900" size={64} speedMultiplier={0.85} />
     </div>
   );
 }

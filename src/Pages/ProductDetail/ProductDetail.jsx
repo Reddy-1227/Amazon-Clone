@@ -9,6 +9,8 @@ import productBaseURL from "../../API/endPoints";
 import PriceFormat from "../../components/Product/PriceFormat";
 import Spinner from "../../components/Spinner";
 import Rating from "@mui/material/Rating";
+import { useCart } from "../../components/DataProvider/DataProvider";
+import { toast } from "react-toastify";
 
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
@@ -17,7 +19,9 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedSize, setSelectedSize] = useState("XL");
+  const [added, setAdded] = useState(false);
   const imgRef = useRef(null);
+  const { dispatch } = useCart();
 
   // Framer Motion 3D tilt
   const x = useMotionValue(0);
@@ -56,6 +60,13 @@ const ProductDetail = () => {
       .catch(() => setProduct(null))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleAddToCart = () => {
+    dispatch({ type: "ADD_TO_CART", payload: product });
+    setAdded(true);
+    toast.success("Added to cart!");
+    setTimeout(() => setAdded(false), 1200);
+  };
 
   if (loading) {
     return (
@@ -163,11 +174,20 @@ const ProductDetail = () => {
           )}
           <div className={styles.actionRow}>
             <button className={styles.buyBtn}>Buy Now</button>
-            <button className={styles.addBtn}>
+            <button
+              className={styles.addBtn}
+              onClick={handleAddToCart}
+              disabled={added}
+              style={
+                added
+                  ? { background: "#ccc", color: "#fff", cursor: "not-allowed" }
+                  : {}
+              }
+            >
               <span role="img" aria-label="cart">
                 🛒
               </span>{" "}
-              Add
+              {added ? "Added!" : "Add"}
             </button>
           </div>
           <div className={styles.description}>{description}</div>
