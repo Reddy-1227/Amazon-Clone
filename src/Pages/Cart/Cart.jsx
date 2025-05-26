@@ -11,6 +11,7 @@ const Cart = () => {
   const [promo, setPromo] = useState("");
   const [discount, setDiscount] = useState(0);
   const [promoMsg, setPromoMsg] = useState("");
+  const [promoTimeout, setPromoTimeout] = useState(null);
 
   const subTotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -26,14 +27,30 @@ const Cart = () => {
       const off = Math.round(subTotal * 0.22 * 100) / 100;
       setDiscount(off);
       setPromoMsg("22% discount applied!");
+      if (promoTimeout) clearTimeout(promoTimeout);
+      const timeout = setTimeout(() => setPromoMsg(""), 2500);
+      setPromoTimeout(timeout);
     } else if (promo.trim() !== "") {
       setDiscount(0);
       setPromoMsg("Invalid code");
+      if (promoTimeout) clearTimeout(promoTimeout);
+      const timeout = setTimeout(() => setPromoMsg(""), 2500);
+      setPromoTimeout(timeout);
     } else {
       setDiscount(0);
       setPromoMsg("");
+      if (promoTimeout) clearTimeout(promoTimeout);
     }
   };
+
+  React.useEffect(() => {
+    if (promo.trim().toUpperCase() === "TESFAMICHAEL12") {
+      const off = Math.round(subTotal * 0.22 * 100) / 100;
+      setDiscount(off);
+    } else {
+      setDiscount(0);
+    }
+  }, [cart]);
 
   return (
     <Layout>
