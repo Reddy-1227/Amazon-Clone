@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import Footer from "../../components/Footer";
 import styles from "./cart.module.css";
@@ -8,13 +8,32 @@ import { FaTrashAlt } from "react-icons/fa";
 
 const Cart = () => {
   const { cart, dispatch } = useCart();
+  const [promo, setPromo] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [promoMsg, setPromoMsg] = useState("");
+
   const subTotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
   const delivery = 0;
   const tax = subTotal > 0 ? Math.round(subTotal * 0.05 * 100) / 100 : 0;
-  const total = subTotal + delivery + tax;
+  const total = subTotal + delivery + tax - discount;
+
+  // Coupon logic
+  const handleApplyPromo = () => {
+    if (promo.trim().toUpperCase() === "TESFAMICHAEL12") {
+      const off = Math.round(subTotal * 0.22 * 100) / 100;
+      setDiscount(off);
+      setPromoMsg("22% discount applied!");
+    } else if (promo.trim() !== "") {
+      setDiscount(0);
+      setPromoMsg("Invalid code");
+    } else {
+      setDiscount(0);
+      setPromoMsg("");
+    }
+  };
 
   return (
     <Layout>
@@ -103,13 +122,39 @@ const Cart = () => {
           </div>
           <hr className={styles.cartDivider} />
           <div className={styles.cartPromoInputRow}>
-            <input className={styles.cartPromoInput} placeholder="Promocode" />
-            <button className={styles.cartPromoBtn}>Apply</button>
+            <input
+              className={styles.cartPromoInput}
+              placeholder="Promocode"
+              value={promo}
+              onChange={(e) => setPromo(e.target.value)}
+            />
+            <button className={styles.cartPromoBtn} onClick={handleApplyPromo}>
+              Apply
+            </button>
           </div>
+          {promoMsg &&
+            (discount ? (
+              <div className={styles.promoSuccessTag}>
+                <span className={styles.promoSuccessCheck}>
+                  <span style={{ fontSize: "1.2em" }}>✔</span> 22% discount
+                  applied!
+                </span>
+              </div>
+            ) : (
+              <div className={styles.promoErrorTag}>{promoMsg}</div>
+            ))}
           <div className={`${styles.cartSummaryRow} ${styles.subtotal}`}>
             <span>Sub-Total</span>
             <span>${subTotal.toFixed(2)}</span>
           </div>
+          {discount > 0 && (
+            <div className={styles.cartSummaryRow}>
+              <span>Discount</span>
+              <span
+                style={{ color: "#1a4d1a", fontWeight: 600 }}
+              >{`- $${discount.toFixed(2)}`}</span>
+            </div>
+          )}
           <div className={styles.cartSummaryRow}>
             <span>Delivery</span>
             <span>${delivery.toFixed(2)}</span>
@@ -121,7 +166,7 @@ const Cart = () => {
           <hr className={styles.cartDivider} />
           <div className={styles.cartSummaryTotalRow}>
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${total > 0 ? total.toFixed(2) : "0.00"}</span>
           </div>
           <button className={styles.cartCheckoutBtn}>Proceed to Payment</button>
         </div>
