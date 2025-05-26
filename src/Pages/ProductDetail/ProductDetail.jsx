@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import Layout from "../../components/Layout";
-import Footer from "../../components/Footer";
+// import Footer from "../../components/Footer";
 import styles from "./productDetail.module.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -26,9 +26,10 @@ const ProductDetail = () => {
   // Framer Motion 3D tilt
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  // Make the tilt less sensitive for a slower, smoother effect
-  const rotateX = useTransform(y, [0, 1], [8, -8]);
-  const rotateY = useTransform(x, [0, 1], [-8, 8]);
+  // Make the tilt more pronounced and use the full -1 to 1 range of motion values
+  // Adjusted rotation logic to ensure edges tilt towards the user as per feedback
+  const rotateX = useTransform(y, [-1, 1], [-15, 15]); // Flipped output range
+  const rotateY = useTransform(x, [-1, 1], [15, -15]); // Flipped output range
 
   useEffect(() => {
     const img = imgRef.current;
@@ -131,8 +132,14 @@ const ProductDetail = () => {
             style={{
               rotateX,
               rotateY,
-              transition: "box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
               boxShadow: "0 8px 32px rgba(20,40,80,0.12)",
+            }}
+            whileHover={{ scale: 1.05 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 20,
+              mass: 1,
             }}
             draggable={true}
           />
@@ -141,7 +148,7 @@ const ProductDetail = () => {
           <div className={styles.title}>{title}</div>
           <div className={styles.category}>{category}</div>
           <div className={styles.ratingRow}>
-            <Rating value={rate} precision={0.1} readOnly size="medium" />
+            <Rating value={rate} precision={0.1} size="medium" />
             <span className={styles.ratingValue}>{rate}</span>
             <span className={styles.reviews}>({reviews} reviews)</span>
           </div>
@@ -180,7 +187,14 @@ const ProductDetail = () => {
               disabled={added}
               style={
                 added
-                  ? { background: "#ccc", color: "#fff", cursor: "not-allowed" }
+                  ? {
+                      background: "#28a745",
+                      color: "#fff",
+                      cursor: "not-allowed",
+                      boxShadow:
+                        "0 0 0 2px #218838, 0 4px 16px rgba(40,167,69,0.15)",
+                      transition: "background 0.3s, box-shadow 0.3s",
+                    }
                   : {}
               }
             >
@@ -193,7 +207,7 @@ const ProductDetail = () => {
           <div className={styles.description}>{description}</div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </Layout>
   );
 };

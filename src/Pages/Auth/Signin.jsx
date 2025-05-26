@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "../../components/Layout";
-import Footer from "../../components/Footer";
 import styles from "./auth.module.css";
 
 const Signin = () => {
@@ -10,7 +9,6 @@ const Signin = () => {
         <h2>Sign In</h2>
         {/* Add your styled form here */}
       </div>
-      <Footer />
     </Layout>
   );
 };

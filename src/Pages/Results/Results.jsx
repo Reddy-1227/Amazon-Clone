@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import Footer from "../../components/Footer";
+// import Footer from "../../components/Footer";
 import styles from "./results.module.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -46,7 +46,7 @@ const Results = () => {
           </div>
         )}
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </Layout>
   );
 };

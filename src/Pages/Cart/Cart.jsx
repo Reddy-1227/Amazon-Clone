@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
-import Footer from "../../components/Footer";
+// import Footer from "../../components/Footer";
 import styles from "./cart.module.css";
 import { Link } from "react-router-dom";
 import { useCart } from "../../components/DataProvider/DataProvider";
@@ -205,7 +205,7 @@ const Cart = () => {
           <button className={styles.cartCheckoutBtn}>Proceed to Payment</button>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </Layout>
   );
 };
