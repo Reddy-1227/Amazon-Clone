@@ -65,14 +65,27 @@ const Cart = () => {
             cart.map((item) => (
               <div className={styles.cartItemCard} key={item.id}>
                 <div className={styles.cartItemImgWrap}>
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className={styles.cartItemImg}
-                  />
+                  <Link to={`/product/${item.id}`}>
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className={styles.cartItemImg}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </Link>
                 </div>
                 <div className={styles.cartItemInfo}>
-                  <div className={styles.cartItemTitle}>{item.title}</div>
+                  <Link
+                    to={`/product/${item.id}`}
+                    className={styles.cartItemTitle}
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {item.title}
+                  </Link>
                   <div className={styles.cartItemPrice}>${item.price}</div>
                   {item.size && (
                     <div className={styles.cartItemSize}>Size: {item.size}</div>

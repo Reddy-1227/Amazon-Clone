@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext, useEffect } from "react";
-import { cartReducer, initialCartState } from "../../Utility/reducer";
+import { cartReducer, initialCartState } from "../../Utility/reducer.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

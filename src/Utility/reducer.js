@@ -1,4 +1,4 @@
-import { ACTIONS } from "../Utility/actions";
+import { ACTIONS } from "./actions";
 
 // Cart reducer for useReducer
 export const initialCartState = {
