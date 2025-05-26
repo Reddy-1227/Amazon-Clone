@@ -5,6 +5,7 @@ import styles from "./cart.module.css";
 import { Link } from "react-router-dom";
 import { useCart } from "../../components/DataProvider/DataProvider";
 import { FaTrashAlt } from "react-icons/fa";
+import { ACTIONS } from "../../Utility/actions";
 
 const Cart = () => {
   const { cart, dispatch } = useCart();
@@ -81,7 +82,7 @@ const Cart = () => {
                       className={styles.qtyBtn}
                       onClick={() =>
                         dispatch({
-                          type: "INCREASE_CART_ITEM",
+                          type: ACTIONS.INCREASE_CART_ITEM,
                           payload: item.id,
                         })
                       }
@@ -94,11 +95,11 @@ const Cart = () => {
                       onClick={() =>
                         item.quantity > 1
                           ? dispatch({
-                              type: "DECREASE_CART_ITEM",
+                              type: ACTIONS.DECREASE_CART_ITEM,
                               payload: item.id,
                             })
                           : dispatch({
-                              type: "REMOVE_FROM_CART",
+                              type: ACTIONS.REMOVE_FROM_CART,
                               payload: item.id,
                             })
                       }
@@ -108,7 +109,10 @@ const Cart = () => {
                     <button
                       className={styles.deleteBtn}
                       onClick={() =>
-                        dispatch({ type: "REMOVE_FROM_CART", payload: item.id })
+                        dispatch({
+                          type: ACTIONS.REMOVE_FROM_CART,
+                          payload: item.id,
+                        })
                       }
                       aria-label="Delete item"
                       style={{

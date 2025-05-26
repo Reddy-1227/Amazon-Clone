@@ -1,3 +1,5 @@
+import { ACTIONS } from "../Utility/actions";
+
 // Cart reducer for useReducer
 export const initialCartState = {
   cart: [],
@@ -5,7 +7,7 @@ export const initialCartState = {
 
 export function cartReducer(state, action) {
   switch (action.type) {
-    case "ADD_TO_CART": {
+    case ACTIONS.ADD_TO_CART: {
       const exists = state.cart.find((item) => item.id === action.payload.id);
       if (exists) {
         // If item exists, increase quantity
@@ -24,16 +26,16 @@ export function cartReducer(state, action) {
         cart: [...state.cart, { ...action.payload, quantity: 1 }],
       };
     }
-    case "REMOVE_FROM_CART": {
+    case ACTIONS.REMOVE_FROM_CART: {
       return {
         ...state,
         cart: state.cart.filter((item) => item.id !== action.payload),
       };
     }
-    case "CLEAR_CART": {
+    case ACTIONS.CLEAR_CART: {
       return { ...state, cart: [] };
     }
-    case "DECREASE_CART_ITEM": {
+    case ACTIONS.DECREASE_CART_ITEM: {
       return {
         ...state,
         cart: state.cart.map((item) =>
@@ -43,7 +45,7 @@ export function cartReducer(state, action) {
         ),
       };
     }
-    case "INCREASE_CART_ITEM": {
+    case ACTIONS.INCREASE_CART_ITEM: {
       return {
         ...state,
         cart: state.cart.map((item) =>
