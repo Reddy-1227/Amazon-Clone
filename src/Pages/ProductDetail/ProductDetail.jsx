@@ -26,32 +26,9 @@ const ProductDetail = () => {
   // Framer Motion 3D tilt
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  // Make the tilt more pronounced and use the full -1 to 1 range of motion values
   // Adjusted rotation logic to ensure edges tilt towards the user as per feedback
   const rotateX = useTransform(y, [-1, 1], [-15, 15]); // Flipped output range
   const rotateY = useTransform(x, [-1, 1], [15, -15]); // Flipped output range
-
-  useEffect(() => {
-    const img = imgRef.current;
-    if (!img) return;
-    const handleMouseMove = (e) => {
-      const rect = img.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;
-      const py = (e.clientY - rect.top) / rect.height;
-      x.set(px * 2 - 1); // -1 to 1
-      y.set(py * 2 - 1); // -1 to 1
-    };
-    const handleMouseLeave = () => {
-      x.set(0);
-      y.set(0);
-    };
-    img.addEventListener("mousemove", handleMouseMove);
-    img.addEventListener("mouseleave", handleMouseLeave);
-    return () => {
-      img.removeEventListener("mousemove", handleMouseMove);
-      img.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, [product, x, y]);
 
   useEffect(() => {
     setLoading(true);
@@ -121,7 +98,6 @@ const ProductDetail = () => {
       >
         <div className={styles.imgSection}>
           <motion.img
-            ref={imgRef}
             src={image}
             alt={title}
             className={
@@ -132,16 +108,34 @@ const ProductDetail = () => {
             style={{
               rotateX,
               rotateY,
-              boxShadow: "0 8px 32px rgba(20,40,80,0.12)",
+              boxShadow:
+                "0 12px 36px 0 rgba(20,40,80,0.18), 0 1.5px 8px 0 rgba(40,167,69,0.10)",
+              borderRadius: "1.5rem",
+              transition: "box-shadow 0.3s, filter 0.3s",
+              filter:
+                x.get() !== 0 || y.get() !== 0
+                  ? "brightness(1.08) saturate(1.1) drop-shadow(0 0 12px #28a74533)"
+                  : "none",
             }}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.08 }}
             transition={{
               type: "spring",
-              stiffness: 300,
-              damping: 20,
-              mass: 1,
+              stiffness: 350,
+              damping: 22,
+              mass: 1.1,
             }}
-            draggable={true}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const px = (e.clientX - rect.left) / rect.width;
+              const py = (e.clientY - rect.top) / rect.height;
+             
+              x.set((px - 0.5) * 2); 
+              y.set(-(py - 0.5) * 2);
+            }}
+            onMouseLeave={() => {
+              x.set(0);
+              y.set(0);
+            }}
           />
         </div>
         <div className={styles.infoSection}>
