@@ -25,3 +25,5 @@ dist-ssr
 
 conn.txt
 /src copy
+
+.env
