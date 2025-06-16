@@ -20,6 +20,10 @@ import visaImg from "../../assets/Images/visa2.png";
 import mastercardImg from "../../assets/Images/master.png";
 import amexImg from "../../assets/Images/american.png";
 
+import { storage } from "../../Utility/firebase";
+import { ref, uploadString } from "firebase/storage";
+import { Timestamp } from "firebase/firestore";
+
 const stripePromise = loadStripe(
   import.meta.env.VITE_REACT_APP_STRIPE_PUBLISHABLE_KEY
 );
@@ -41,12 +45,17 @@ function StripeCardForm({ totalAmount, onSuccess }) {
         setLoading(false);
         return;
       }
+      let orderData = undefined;
+      if (window.saveOrderData) {
+        const raw = window.saveOrderData();
+        orderData = { ...raw, createdAt: undefined };
+      }
       const response = await fetch(
         `${backendUrl}/payment/create-payment-intent`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: totalAmount }),
+          body: JSON.stringify({ amount: totalAmount, orderData }),
         }
       );
       const data = await response.json();
@@ -91,7 +100,8 @@ function StripeCardForm({ totalAmount, onSuccess }) {
             margin: "0 auto",
           }}
         >
-          Stripe is not loaded. Please check your Stripe publishable key and reload the page.
+          Stripe is not loaded. Please check your Stripe publishable key and
+          reload the page.
         </div>
       ) : null}
       <div className="stripeCardBox">
@@ -148,7 +158,6 @@ const Payment = () => {
   const [editShipping, setEditShipping] = useState(false);
   const [shippingForm, setShippingForm] = useState(shippingDetails || {});
   const [shippingLoading, setShippingLoading] = useState(false);
-  // Removed unused editCartId/editCartQty state
 
   useEffect(() => {
     if (!shippingDetails) {
@@ -163,7 +172,7 @@ const Payment = () => {
   };
   const handleShippingSave = async () => {
     setShippingLoading(true);
-    await new Promise((res) => setTimeout(res, 400)); // Simulate async save
+    await new Promise((res) => setTimeout(res, 400));
     updateShippingDetails(shippingForm);
     setEditShipping(false);
     setShippingLoading(false);
@@ -174,13 +183,11 @@ const Payment = () => {
     setEditShipping(false);
   };
 
-
   // Stripe Checkout redirect handler (now with loading/error state)
   const handleStripeCheckoutSession = async () => {
     setCheckoutError("");
     setCheckoutLoading(true);
     try {
-      // Map cart to Stripe line_items format
       const items = cart.map((item) => ({
         price_data: {
           currency: "usd",
@@ -211,6 +218,18 @@ const Payment = () => {
     setCheckoutLoading(false);
   };
 
+  // Helper to provide order data to StripeCardForm
+  window.saveOrderData = () => ({
+    cart,
+    shippingDetails,
+    totalAmount,
+    discount,
+    subTotal,
+    promoCode,
+    createdAt: Timestamp.now(),
+    status: "paid",
+  });
+
   return (
     <Layout>
       <div className="paymentSectionWrapper">
@@ -221,11 +240,11 @@ const Payment = () => {
         >
           <h2 className="paymentTitle">Review & Pay</h2>
 
-        <motion.div
-          className="reviewSection"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
+          <motion.div
+            className="reviewSection"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
             <div className="reviewBlock">
               <h3 className="reviewHeading">Delivery Location</h3>
               {editShipping ? (
@@ -321,99 +340,97 @@ const Payment = () => {
                 </div>
               )}
             </div>
-        </motion.div>
-            <div className="reviewBlock">
-              <h3 className="reviewHeading">Your Cart</h3>
-              <div className="reviewCartItems">
-                {cart.length === 0 ? (
-                  <div style={{ color: "#888", fontStyle: "italic" }}>
-                    Your cart is empty.
-                  </div>
-                ) : (
-                  cart.map((item) => (
-                    <div className="reviewCartItem" key={item.id}>
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="reviewCartImg"
-                      />
-                      <div className="reviewCartInfo">
-                        <div className="reviewCartTitle">{item.title}</div>
-                        <>
-                          <div
-                            className="reviewCartQty"
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 8,
+          </motion.div>
+          <div className="reviewBlock">
+            <h3 className="reviewHeading">Your Cart</h3>
+            <div className="reviewCartItems">
+              {cart.length === 0 ? (
+                <div style={{ color: "#888", fontStyle: "italic" }}>
+                  Your cart is empty.
+                </div>
+              ) : (
+                cart.map((item) => (
+                  <div className="reviewCartItem" key={item.id}>
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="reviewCartImg"
+                    />
+                    <div className="reviewCartInfo">
+                      <div className="reviewCartTitle">{item.title}</div>
+                      <>
+                        <div
+                          className="reviewCartQty"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
+                        >
+                          <button
+                            type="button"
+                            className="iconBtn"
+                            title="Decrease"
+                            onClick={() =>
+                              updateCartItem(
+                                item.id,
+                                Math.max(1, item.quantity - 1)
+                              )
+                            }
+                            disabled={item.quantity <= 1}
+                          >
+                            <FaMinus size={15} />
+                          </button>
+                          <span>Qty: {item.quantity}</span>
+                          <button
+                            type="button"
+                            className="iconBtn"
+                            title="Increase"
+                            onClick={() =>
+                              updateCartItem(item.id, item.quantity + 1)
+                            }
+                          >
+                            <FaPlus size={15} />
+                          </button>
+                        </div>
+                        <div className="reviewCartPrice">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </div>
+                        <div style={{ marginTop: 4, display: "flex", gap: 8 }}>
+                          <button
+                            type="button"
+                            className="iconBtn delete"
+                            title="Remove"
+                            onClick={async () => {
+                              const result = await Swal.fire({
+                                title: "Are you sure?",
+                                text: "Do you want to remove this item from your cart?",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#e74c3c",
+                                cancelButtonColor: "#3085d6",
+                                confirmButtonText: "Yes, remove it!",
+                              });
+                              if (result.isConfirmed) {
+                                removeCartItem(item.id);
+                                Swal.fire(
+                                  "Removed!",
+                                  "The item has been removed.",
+                                  "success"
+                                );
+                              }
                             }}
                           >
-                            <button
-                              type="button"
-                              className="iconBtn"
-                              title="Decrease"
-                              onClick={() =>
-                                updateCartItem(
-                                  item.id,
-                                  Math.max(1, item.quantity - 1)
-                                )
-                              }
-                              disabled={item.quantity <= 1}
-                            >
-                              <FaMinus size={15} />
-                            </button>
-                            <span>Qty: {item.quantity}</span>
-                            <button
-                              type="button"
-                              className="iconBtn"
-                              title="Increase"
-                              onClick={() =>
-                                updateCartItem(item.id, item.quantity + 1)
-                              }
-                            >
-                              <FaPlus size={15} />
-                            </button>
-                          </div>
-                          <div className="reviewCartPrice">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </div>
-                          <div
-                            style={{ marginTop: 4, display: "flex", gap: 8 }}
-                          >
-                            <button
-                              type="button"
-                              className="iconBtn delete"
-                              title="Remove"
-                              onClick={async () => {
-                                const result = await Swal.fire({
-                                  title: "Are you sure?",
-                                  text: "Do you want to remove this item from your cart?",
-                                  icon: "warning",
-                                  showCancelButton: true,
-                                  confirmButtonColor: "#e74c3c",
-                                  cancelButtonColor: "#3085d6",
-                                  confirmButtonText: "Yes, remove it!",
-                                });
-                                if (result.isConfirmed) {
-                                  removeCartItem(item.id);
-                                  Swal.fire(
-                                    "Removed!",
-                                    "The item has been removed.",
-                                    "success"
-                                  );
-                                }
-                              }}
-                            >
-                              <FaTrash size={18} />
-                            </button>
-                          </div>
-                        </>
-                      </div>
+                            <FaTrash size={18} />
+                          </button>
+                        </div>
+                      </>
                     </div>
-                  ))
-                )}
-              </div>
+                  </div>
+                ))
+              )}
             </div>
+          </div>
 
           <motion.div
             className="totalAmount"
@@ -511,7 +528,10 @@ const Payment = () => {
               onClick={handleStripeCheckoutSession}
               type="button"
               disabled={
-                cart.length === 0 || !shippingDetails || checkoutLoading || totalAmount <= 0
+                cart.length === 0 ||
+                !shippingDetails ||
+                checkoutLoading ||
+                totalAmount <= 0
               }
             >
               {checkoutLoading && (
@@ -524,7 +544,15 @@ const Payment = () => {
               </span>
             </button>
             {checkoutError && (
-              <div style={{ color: "red", marginTop: 8, textAlign: "center", maxWidth: 600, margin: "0 auto" }}>
+              <div
+                style={{
+                  color: "red",
+                  marginTop: 8,
+                  textAlign: "center",
+                  maxWidth: 600,
+                  margin: "0 auto",
+                }}
+              >
                 {checkoutError}
               </div>
             )}

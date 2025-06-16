@@ -9,6 +9,13 @@ const dotenv = require("dotenv");
 dotenv.config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+// Firebase Admin SDK for server-side Firestore access
+const admin = require("firebase-admin");
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+const db = admin.firestore();
+
 setGlobalOptions({ maxInstances: 10 });
 
 app.use(cors({ origin: true }));
@@ -59,7 +66,7 @@ app.post("/payment/create-checkout-session", async (req, res) => {
 
 // This endpoint creates a payment intent for Stripe payments / payment UI is handled by our client code
 app.post("/payment/create-payment-intent", async (req, res) => {
-  const { amount } = req.body;
+  const { amount, orderData } = req.body;
 
   // Validate amount
   if (
@@ -77,6 +84,19 @@ app.post("/payment/create-payment-intent", async (req, res) => {
       currency: "usd",
       automatic_payment_methods: { enabled: true },
     });
+
+    // Save order to Firestore if orderData is provided
+    if (orderData) {
+      try {
+        await db.collection("orders").add({
+          ...orderData,
+          paymentIntentId: paymentIntent.id,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      } catch (err) {
+        logger.error("Error saving order to Firestore:", err);
+      }
+    }
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
