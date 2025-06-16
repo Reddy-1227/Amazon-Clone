@@ -8,14 +8,6 @@ const ProtectedRoute = ({ children }) => {
   const { user } = useCart();
   const location = useLocation();
 
-  React.useEffect(() => {
-    if (!user) {
-      toast.info("You must be signed in to access this page.", {
-        toastId: "protected-route",
-      });
-    }
-  }, [user]);
-
   if (!user) {
     return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   }
