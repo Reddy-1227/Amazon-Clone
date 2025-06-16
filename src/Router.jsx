@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from "./Pages/Landing/";
 import { Signin } from "./Pages/Auth/";
@@ -9,25 +10,65 @@ import ProductDetail from "./Pages/ProductDetail";
 import Results from "./Pages/Results/";
 import Account from "./Pages/Account/";
 import Shipping from "./Pages/Shipping/";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
 
 function AppRouter() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/home" element={<Landing />} />
-        <Route path="/auth/signin" element={<Signin />} />
-        <Route path="/auth/signup" element={<Signup />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/shipping" element={<Shipping />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/category/:categoryName" element={<Results />} />
-        <Route path="/results" element={<Results />} />
-        <Route path="/account" element={<Account />} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/home" element={<Landing />} />
+          <Route path="/auth/signin" element={<Signin />} />
+          <Route path="/auth/signup" element={<Signup />} />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/shipping"
+            element={
+              <ProtectedRoute>
+                <Shipping />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/category/:categoryName" element={<Results />} />
+          <Route path="/results" element={<Results />} />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+      <ToastContainer position="top-center" autoClose={3000} />
+    </>
   );
 }
 
