@@ -77,6 +77,7 @@ function StripeCardForm({ totalAmount, onSuccess }) {
     }
     setLoading(false);
   };
+
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: 20 }}>
       {!stripe || !elements ? (
@@ -90,8 +91,7 @@ function StripeCardForm({ totalAmount, onSuccess }) {
             margin: "0 auto",
           }}
         >
-          Stripe is not loaded. Please check your Stripe publishable key and
-          reload the page.
+          Stripe is not loaded. Please check your Stripe publishable key and reload the page.
         </div>
       ) : null}
       <div className="stripeCardBox">
@@ -114,7 +114,7 @@ function StripeCardForm({ totalAmount, onSuccess }) {
       <button
         className="placeOrderBtn"
         type="submit"
-        disabled={!stripe || loading}
+        disabled={!stripe || loading || totalAmount <= 0}
         style={{
           display: "flex",
           alignItems: "center",
@@ -221,11 +221,11 @@ const Payment = () => {
         >
           <h2 className="paymentTitle">Review & Pay</h2>
 
-          <motion.div
-            className="reviewSection"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
+        <motion.div
+          className="reviewSection"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
             <div className="reviewBlock">
               <h3 className="reviewHeading">Delivery Location</h3>
               {editShipping ? (
@@ -321,6 +321,7 @@ const Payment = () => {
                 </div>
               )}
             </div>
+        </motion.div>
             <div className="reviewBlock">
               <h3 className="reviewHeading">Your Cart</h3>
               <div className="reviewCartItems">
@@ -412,7 +413,7 @@ const Payment = () => {
                   ))
                 )}
               </div>
-          </motion.div>
+            </div>
 
           <motion.div
             className="totalAmount"
@@ -485,7 +486,6 @@ const Payment = () => {
               <span>Amex</span>
             </div>
           </div>
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -511,7 +511,7 @@ const Payment = () => {
               onClick={handleStripeCheckoutSession}
               type="button"
               disabled={
-                cart.length === 0 || !shippingDetails || checkoutLoading
+                cart.length === 0 || !shippingDetails || checkoutLoading || totalAmount <= 0
               }
             >
               {checkoutLoading && (
@@ -524,7 +524,7 @@ const Payment = () => {
               </span>
             </button>
             {checkoutError && (
-              <div style={{ color: "red", marginTop: 8, textAlign: "center" }}>
+              <div style={{ color: "red", marginTop: 8, textAlign: "center", maxWidth: 600, margin: "0 auto" }}>
                 {checkoutError}
               </div>
             )}
