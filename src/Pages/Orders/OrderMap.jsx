@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const OrderMap = () => {
@@ -19,7 +18,8 @@ const OrderMap = () => {
     }
   }, []);
 
-  let mapSrc = "https://maps.google.com/maps?q=World&t=&z=2&ie=UTF8&iwloc=&output=embed";
+  let mapSrc =
+    "https://maps.google.com/maps?q=World&t=&z=2&ie=UTF8&iwloc=&output=embed";
   if (userLocation) {
     mapSrc = `https://maps.google.com/maps?q=${userLocation.lat},${userLocation.lng}&z=12&output=embed`;
   }

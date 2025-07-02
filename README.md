@@ -11,6 +11,20 @@
 
 ---
 
+## 🖥️ Tech Stack
+
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=react,vite,js,css,firebase,express,materialui" height="32" alt="Tech stack icons"/>
+</p>
+
+- **Frontend:** React, Vite, CSS Modules
+- **Backend/API:** Firebase (Auth, Firestore, Storage), Express (for payment API)
+- **Payments:** Stripe
+- **State Management:** React Context API
+- **Other:** Framer Motion, React Toastify, MUI, SweetAlert2
+
+---
+
 ## ✨ Features
 
 - 🔐 **User Authentication** (Sign up, Sign in, Sign out with Firebase Auth)
@@ -22,16 +36,6 @@
 - 📱 **Responsive Design** (Mobile-first, works on all devices)
 - 🌐 **Persistent State** (Cart and user info saved in localStorage)
 - ⚡ **Fast & Modern UI** (Built with Vite, React, and modular CSS)
-
----
-
-## 🖥️ Tech Stack
-
-- **Frontend:** React, Vite, CSS Modules
-- **Backend/API:** Firebase (Auth, Firestore, Storage), Express (for payment API)
-- **Payments:** Stripe
-- **State Management:** React Context API
-- **Other:** Framer Motion, React Toastify, MUI, SweetAlert2
 
 ---
 
