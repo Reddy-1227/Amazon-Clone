@@ -20,10 +20,14 @@
 
 ### Frontend
 
+
 <p align="left">
   <img src="https://skillicons.dev/icons?i=react,vite,js,css,materialui,redux" height="32" alt="Frontend stack"/>
   <img src="https://img.shields.io/badge/Framer%20Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion"/>
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-1mMem06E8Ef9Esxqs9kg32G6Zxfq8EHF7Q&s" height="32" alt="Dribbble logo"/>
 </p>
+
+<sub><b>Some UI pages inspiration from <a href="https://dribbble.com/">Dribbble</a></b></sub>
 
 - **React** (Vite, JSX, CSS Modules)
 - **Material UI** (MUI)
@@ -146,10 +150,12 @@ DATABASE_URL=your_database_url # SQLite for dev, Postgres/Supabase for prod
 
 ---
 
+
 ## 🙌 Credits
 
 - Built by [Tesfamichael Tafere](https://tesfamichael-tafre.netlify.app/)
 - Inspired by Amazon.com UI/UX
+- Some UI inspiration from [Dribbble](https://dribbble.com/)
 
 ---
 
