@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 import Landing from "./Pages/Landing/";
 import { Signin } from "./Pages/Auth/";
 import { Signup } from "./Pages/Auth/";
@@ -16,6 +17,7 @@ function AppRouter() {
   return (
     <>
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/home" element={<Landing />} />
