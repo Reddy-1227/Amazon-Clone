@@ -1,3 +1,8 @@
+
+<p align="center" style="background:#f3f4f6;padding:20px 0;border-radius:12px;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo" width="200"/>
+</p>
+
 # 🛒 Amazon Clone
 
 > A full-stack, production-grade Amazon e-commerce clone. Built with a modern React frontend (Vite, Material UI, Framer Motion), robust Node.js/Express backend, Prisma ORM, Supabase/PostgreSQL, Stripe payments, and Firebase authentication. Designed for scalability, security, and a seamless user experience—showcasing best practices for enterprise-level web applications.
