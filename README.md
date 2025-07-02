@@ -7,7 +7,7 @@
 ## 🚀 Live Demo
 
 [View Live Site](https://amazon-clone-frontend-phi.vercel.app/)  
-[GitHub Repo](https://github.com/Tesfamichael12/Amazon-Clone-Frontend)
+[GitHub Repo](https://github.com/Tesfamichael12/Amazon-Clone)
 
 ---
 
@@ -43,8 +43,8 @@
 
 1. **Clone the repo:**
    ```bash
-   git clone https://github.com/Tesfamichael12/Amazon-Clone-Frontend.git
-   cd Amazon-Clone-Frontend
+   git clone https://github.com/Tesfamichael12/Amazon-Clone.git
+   cd Amazon-Clone
    ```
 2. **Install dependencies:**
    ```bash

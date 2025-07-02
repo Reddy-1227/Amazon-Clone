@@ -1,6 +1,21 @@
 # 🛒 Amazon Clone Backend (`amazon-api`)
 
-This folder contains the **backend API** for the Amazon Clone project, built with Node.js, Express, Prisma (SQLite for dev, Postgres for deployment), Stripe, and Firebase Admin for authentication.
+This folder contains the **backend API** for the Amazon Clone project, built with Node.js, Express, Prisma (SQLite for dev, Postgres/Supabase for deployment), Stripe, and Firebase Admin for authentication.
+
+---
+
+## 🛠️ Tech Stack
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js"/>
+  <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma"/>
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
+  <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite"/>
+  <img src="https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe"/>
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase"/>
+</p>
 
 ---
 
@@ -9,6 +24,8 @@ This folder contains the **backend API** for the Amazon Clone project, built wit
 - 🔐 User authentication with Firebase
 - 🧾 Order creation & retrieval (with Stripe payment integration)
 - 🗄️ SQLite (dev) / Postgres (prod) database via Prisma ORM
+- 🌱 Supabase as a managed Postgres provider for easy cloud deployment
+- ⚡ Powered by Prisma ORM for type-safe database access
 - 🔒 Secure endpoints (orders are user-specific)
 
 ---
@@ -20,6 +37,7 @@ This folder contains the **backend API** for the Amazon Clone project, built wit
 - 🔥 Firebase project (for authentication)
 - 💳 Stripe account (for payments)
 - 🐘 [PostgreSQL](https://www.postgresql.org/) (for production/deployment)
+- 🟩 [Supabase](https://supabase.com/) (for managed Postgres hosting)
 
 ---
 
@@ -28,8 +46,8 @@ This folder contains the **backend API** for the Amazon Clone project, built wit
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd Amazon-Clone-Frontend/amazon-api
+git clone https://github.com/Tesfamichael12/Amazon-Clone.git
+cd Amazon-Clone/amazon-api
 ```
 
 ### 2️⃣ Install Dependencies
@@ -73,7 +91,7 @@ DATABASE_URL="file:./dev.db"
 
 - **Production (Postgres):**
 
-  - Update your `.env` and `prisma/schema.prisma` to use your Postgres `DATABASE_URL`.
+  - Update your `.env` and `prisma/schema.prisma` to use your Postgres `DATABASE_URL` (can be a Supabase connection string).
   - Run:
 
     ```bash
