@@ -41,6 +41,24 @@
 - **Firebase Admin SDK** (authentication)
 - **Stripe** (payments)
 
+---
+
+## ☁️ Deployment
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel"/>
+  <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Render"/>
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase"/>
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase"/>
+</p>
+
+- **Frontend:** Deployed on [Vercel](https://vercel.com/) for instant, global static hosting and serverless functions.
+- **Backend:** Deployed on [Render](https://render.com/) for scalable Node.js API hosting.
+- **Database:** [Supabase](https://supabase.com/) (managed Postgres, connection pooling, secure cloud storage).
+- **Authentication & Functions:** [Firebase](https://firebase.google.com/) (Auth, Admin SDK, and optional serverless functions).
+
+---
+
 ## ✨ Features
 
 - 🔐 **Secure Authentication:** Firebase Auth (email/password, Google sign-in)
@@ -49,7 +67,7 @@
 - 💳 **Checkout & Payment:** Stripe integration for secure payments
 - 🚚 **Order Tracking:** View order history and delivery status (orders saved to backend DB)
 - 🎁 **Promo Codes & Discounts:** Apply discount codes at checkout
-- � **Shipping Details:** Full address, contact, and region support
+- 📦 **Shipping Details:** Full address, contact, and region support
 - 🧾 **Order History:** Modern, responsive grid with clear labels and truncated titles
 - 🧑‍💼 **User Account Page:** View and manage personal info, sign out, see order history
 - 🛡️ **Backend Auth Middleware:** All order/payment endpoints protected by Firebase token verification

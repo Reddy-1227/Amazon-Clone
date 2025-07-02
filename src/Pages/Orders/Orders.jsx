@@ -156,9 +156,11 @@ const Orders = () => {
             </div>
           )}
         </div>
-        <div className={styles.orderMap}>
-          <OrderMap address={null} />
-        </div>
+        {(!orders || orders.length === 0) && (
+          <div className={styles.orderMap}>
+            <OrderMap address={null} />
+          </div>
+        )}
       </div>
     </Layout>
   );
