@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+// Prisma Orders API
+const ordersApi = require("./orders");
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -13,7 +16,11 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 app.use(express.json());
+
+// Orders API endpoints
+app.use("/api", ordersApi);
 
 // This endpoint creates a checkout session for Stripe payments / using stripe's payment UI
 app.post("/api/payment/create-checkout-session", async (req, res) => {

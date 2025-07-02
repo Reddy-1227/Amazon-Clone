@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import styles from "./orders.module.css";
 import orderNowGif from "../../assets/Images/order-now.gif";
-import { db } from "../../Utility/firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { auth } from "../../Utility/firebase";
+const backendUrl =
+  import.meta.env.VITE_REACT_APP_BACKEND_URL || "http://localhost:5000/api";
 import OrderMap from "./OrderMap";
 
 const Orders = () => {
@@ -12,13 +13,25 @@ const Orders = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true);
       try {
-        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(q);
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const user = auth.currentUser;
+        if (!user) throw new Error("User not authenticated");
+        const idToken = await user.getIdToken();
+        const response = await fetch(`${backendUrl}/orders`, {
+          headers: { Authorization: `Bearer ${idToken}` },
+        });
+        let data = await response.json();
+        // Parse address JSON to shippingDetails
+        data = data.map((order) => {
+          let shippingDetails = {};
+          try {
+            shippingDetails = order.address ? JSON.parse(order.address) : {};
+          } catch {
+            shippingDetails = {};
+          }
+          return { ...order, shippingDetails };
+        });
         setOrders(data);
       } catch (err) {
         setOrders([]);
@@ -32,7 +45,7 @@ const Orders = () => {
     <Layout>
       <div className={styles.ordersWrapper}>
         <h2>Your Orders</h2>
-        {orders.length === 0 && !loading ? (
+        {orders.length === 0 && !loading && (
           <div className={styles.orderNowGifWrap}>
             <img
               src={orderNowGif}
@@ -40,19 +53,8 @@ const Orders = () => {
               className={styles.orderNowGifFull}
             />
           </div>
-        ) : (
-          <div className={styles.orderNowGifWrap}>
-            <img
-              src={orderNowGif}
-              alt="Order Now"
-              className={styles.orderNowGif}
-            />
-          </div>
         )}
         <div className={styles.ordersList}>
-          <div className={styles.orderMap}>
-            <OrderMap address={null} />
-          </div>
           {loading ? (
             <div style={{ textAlign: "center", color: "#888", marginTop: 24 }}>
               Loading orders...
@@ -62,56 +64,100 @@ const Orders = () => {
               No orders found.
             </div>
           ) : (
-            orders.map((order) => (
-              <div className={styles.orderCard} key={order.id}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                    <b>Order ID:</b> {order.id}
+            <div className={styles.ordersGrid}>
+              {orders.map((order) => (
+                <div className={styles.orderCard} key={order.id}>
+                  <div className={styles.orderHeader}>
+                    <div>
+                      <span className={styles.orderId}>
+                        Order #{order.id.slice(0, 8)}...
+                      </span>
+                    </div>
+                    <div className={styles.orderDate}>
+                      {order.createdAt && order.createdAt.seconds
+                        ? new Date(
+                            order.createdAt.seconds * 1000
+                          ).toLocaleString()
+                        : order.createdAt
+                        ? new Date(order.createdAt).toLocaleString()
+                        : ""}
+                    </div>
                   </div>
-                  <div style={{ fontSize: 13, color: "#888" }}>
-                    {order.createdAt && order.createdAt.seconds
-                      ? new Date(
-                          order.createdAt.seconds * 1000
-                        ).toLocaleString()
-                      : ""}
+                  <div className={styles.orderStatusRow}>
+                    <span className={styles.orderStatus}>
+                      <b>Status:</b> {order.status || "Processing"}
+                    </span>
+                  </div>
+                  <div className={styles.orderShippingBlock}>
+                    <b>Shipping:</b>
+                    <div className={styles.orderShippingDetails}>
+                      <span>{order.shippingDetails?.name}</span>
+                      <span>{order.shippingDetails?.address}</span>
+                      <span>{order.shippingDetails?.country}</span>
+                      <span>{order.shippingDetails?.pincode}</span>
+                      <span>{order.shippingDetails?.contact}</span>
+                    </div>
+                  </div>
+                  <div className={styles.orderItemsBlock}>
+                    <b>Items:</b>
+                    <ul className={styles.orderItemsList}>
+                      {(order.items || order.cart || []).map((item, idx) => (
+                        <li key={idx} className={styles.orderItem}>
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className={styles.orderItemImg}
+                          />
+                          <span className={styles.orderItemLabel}>Product</span>
+                          <span
+                            className={styles.orderItemTitle}
+                            title={item.title}
+                          >
+                            {item.title}
+                          </span>
+                          <span className={styles.orderItemLabel}>Qty</span>
+                          <span className={styles.orderItemQty}>
+                            x{item.quantity}
+                          </span>
+                          <span className={styles.orderItemLabel}>Total</span>
+                          <span className={styles.orderItemPrice}>
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className={styles.orderSummaryBlock}>
+                    <div className={styles.orderSummaryRow}>
+                      <span>Subtotal:</span>
+                      <span>${order.subTotal?.toFixed(2) ?? "0.00"}</span>
+                    </div>
+                    {order.discount > 0 && (
+                      <div className={styles.orderSummaryRow}>
+                        <span>
+                          Discount
+                          {order.promoCode ? ` (${order.promoCode})` : ""}:
+                        </span>
+                        <span>- ${order.discount.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className={styles.orderSummaryRow}>
+                      <span>Total:</span>
+                      <span className={styles.orderTotal}>
+                        ${order.totalAmount?.toFixed(2) || "0.00"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={styles.orderMap}>
+                    <OrderMap address={order.shippingDetails?.address} />
                   </div>
                 </div>
-                <div style={{ margin: "8px 0 4px 0" }}>
-                  <b>Status:</b> {order.status || "Processing"}
-                </div>
-                <div style={{ margin: "8px 0 4px 0" }}>
-                  <b>Shipping:</b> {order.shippingDetails?.name},{" "}
-                  {order.shippingDetails?.address},{" "}
-                  {order.shippingDetails?.country},{" "}
-                  {order.shippingDetails?.pincode},{" "}
-                  {order.shippingDetails?.contact}
-                </div>
-                <div style={{ margin: "8px 0 4px 0" }}>
-                  <b>Items:</b>
-                  <ul style={{ margin: 0, paddingLeft: 18 }}>
-                    {order.cart?.map((item, idx) => (
-                      <li key={idx}>
-                        {item.title} x {item.quantity} ($
-                        {(item.price * item.quantity).toFixed(2)})
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div style={{ margin: "8px 0 4px 0" }}>
-                  <b>Total:</b> ${order.totalAmount?.toFixed(2) || "0.00"}
-                </div>
-                <div className={styles.orderMap}>
-                  <OrderMap address={order.shippingDetails?.address} />
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
+        </div>
+        <div className={styles.orderMap}>
+          <OrderMap address={null} />
         </div>
       </div>
     </Layout>

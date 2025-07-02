@@ -20,16 +20,41 @@ import visaImg from "../../assets/Images/visa2.png";
 import mastercardImg from "../../assets/Images/master.png";
 import amexImg from "../../assets/Images/american.png";
 
-import { storage } from "../../Utility/firebase";
-import { ref, uploadString } from "firebase/storage";
-import { Timestamp } from "firebase/firestore";
+import { auth } from "../../Utility/firebase";
+const backendUrl =
+  import.meta.env.VITE_REACT_APP_BACKEND_URL || "http://localhost:5000/api";
 
 const stripePromise = loadStripe(
   import.meta.env.VITE_REACT_APP_STRIPE_PUBLISHABLE_KEY
 );
-const backendUrl = import.meta.env.VITE_REACT_APP_BACKEND_URL;
 
-function StripeCardForm({ totalAmount, onSuccess }) {
+async function saveOrderToBackend(orderData) {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+  const idToken = await user.getIdToken();
+  // Attach user email and name for backend user creation
+  const userInfo = { email: user.email, name: user.displayName };
+  const response = await fetch(`${backendUrl}/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+    body: JSON.stringify({ ...orderData, ...userInfo }),
+  });
+  if (!response.ok) throw new Error("Failed to save order");
+  return response.json();
+}
+
+function StripeCardForm({
+  totalAmount,
+  cart,
+  shippingDetails,
+  discount,
+  subTotal,
+  promoCode,
+  onSuccess,
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -45,17 +70,29 @@ function StripeCardForm({ totalAmount, onSuccess }) {
         setLoading(false);
         return;
       }
-      let orderData = undefined;
-      if (window.saveOrderData) {
-        const raw = window.saveOrderData();
-        orderData = { ...raw, createdAt: undefined };
-      }
+      // Prepare order data for backend
+      const orderData = {
+        items: cart.map((item) => ({
+          productId: item.productId || item.id,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image || null,
+        })),
+        shippingDetails: shippingDetails || {},
+        totalAmount,
+        paymentStatus: "paid",
+        discount,
+        subTotal,
+        promoCode,
+      };
+      // 1. Create payment intent
       const response = await fetch(
         `${backendUrl}/payment/create-payment-intent`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: totalAmount, orderData }),
+          body: JSON.stringify({ amount: totalAmount }),
         }
       );
       const data = await response.json();
@@ -64,6 +101,7 @@ function StripeCardForm({ totalAmount, onSuccess }) {
         setLoading(false);
         return;
       }
+      // 2. Confirm card payment
       const cardElement = elements.getElement(CardElement);
       const result = await stripe.confirmCardPayment(data.clientSecret, {
         payment_method: {
@@ -76,7 +114,9 @@ function StripeCardForm({ totalAmount, onSuccess }) {
         result.paymentIntent &&
         result.paymentIntent.status === "succeeded"
       ) {
-        toast.success("Payment successful!");
+        // 3. Save order to backend
+        await saveOrderToBackend(orderData);
+        toast.success("Payment & Order successful!");
         if (onSuccess) onSuccess();
       } else {
         setError("Payment failed. Please try again.");
@@ -512,6 +552,11 @@ const Payment = () => {
             <Elements stripe={stripePromise}>
               <StripeCardForm
                 totalAmount={totalAmount}
+                cart={cart}
+                shippingDetails={shippingDetails}
+                discount={discount}
+                subTotal={subTotal}
+                promoCode={promoCode}
                 onSuccess={() => navigate("/orders")}
               />
             </Elements>
