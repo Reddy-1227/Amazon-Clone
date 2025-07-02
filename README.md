@@ -60,7 +60,7 @@
 
 ---
 
-## �️ Local Development & Setup
+## 🛠️ Local Development & Setup
 
 ### 1. Clone the repo
 

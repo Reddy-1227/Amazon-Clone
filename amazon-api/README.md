@@ -79,25 +79,25 @@ DATABASE_URL="file:./dev.db"
 
 ### 5️⃣ Database Setup (Prisma)
 
-- **Development (SQLite):**
+#### Development (SQLite)
 
-  - The project uses SQLite for local development. The schema is defined in `prisma/schema.prisma`.
-  - To set up the database and generate the Prisma client:
+1. The project uses SQLite for local development. The schema is defined in `prisma/schema.prisma`.
+2. To set up the database and generate the Prisma client:
+   ```bash
+   npx prisma migrate dev --name init
+   npx prisma generate
+   ```
 
-    ```bash
-    npx prisma migrate dev --name init
-    npx prisma generate
-    ```
+#### Production (Postgres/Supabase)
 
-- **Production (Postgres):**
-
-  - Update your `.env` and `prisma/schema.prisma` to use your Postgres `DATABASE_URL` (can be a Supabase connection string).
-  - Run:
-
-    ```bash
-    npx prisma migrate deploy
-    npx prisma generate
-    ```
+1. Update your `.env` and `prisma/schema.prisma` to use your Postgres `DATABASE_URL` (can be a Supabase connection string).
+2. Run:
+   ```bash
+   npx prisma migrate deploy
+   npx prisma generate
+   ```
+3. If switching from SQLite to Postgres, delete the `prisma/migrations` folder and `prisma/migration_lock.toml` before running migrations.
+4. For Supabase, use the connection pooler string for local development and direct connection for production if possible.
 
 ### 6️⃣ Start the Backend Server
 
@@ -106,6 +106,18 @@ npm start
 ```
 
 - The server will run on [http://localhost:5000](http://localhost:5000) by default.
+
+---
+
+## 🚀 Production Deployment Checklist
+
+- [ ] Set all environment variables in your production environment (see `.env.example`).
+- [ ] Add your Firebase service account as a secret file (never commit it to git).
+- [ ] Use a managed Postgres (e.g., Supabase) and update `DATABASE_URL` accordingly.
+- [ ] Run `npx prisma migrate deploy` and `npx prisma generate` on your production server.
+- [ ] Use HTTPS for all API endpoints (required for Stripe and secure auth).
+- [ ] Set up CORS and rate limiting for security.
+- [ ] Monitor logs and errors for any issues after deployment.
 
 ---
 
@@ -136,6 +148,8 @@ STRIPE_SECRET_KEY=sk_test_...
 FIREBASE_SERVICE_ACCOUNT_KEY=./serviceAccountKey.json
 DATABASE_URL="file:./dev.db" # or your Postgres connection string
 ```
+
+---
 
 ---
 
