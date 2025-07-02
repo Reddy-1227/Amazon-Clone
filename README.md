@@ -1,61 +1,124 @@
 # 🛒 Amazon Clone
 
-> A modern, full-featured Amazon e-commerce clone built with React, Vite, and Firebase. Experience seamless shopping, real-time cart updates, secure authentication, and a beautiful, responsive UI inspired by Amazon.com.
+> A full-stack, production-grade Amazon e-commerce clone. Built with a modern React frontend (Vite, Material UI, Framer Motion), robust Node.js/Express backend, Prisma ORM, Supabase/PostgreSQL, Stripe payments, and Firebase authentication. Designed for scalability, security, and a seamless user experience—showcasing best practices for enterprise-level web applications.
 
 ---
 
 ## 🚀 Live Demo
 
-[View Live Site](https://amazon-clone-frontend-phi.vercel.app/)  
-[GitHub Repo](https://github.com/Tesfamichael12/Amazon-Clone)
+- **Frontend:** [View Live Site](https://amazon-clone-frontend-phi.vercel.app/)
+- **Backend:** [GitHub Backend API](https://github.com/Tesfamichael12/Amazon-Clone/tree/main/amazon-api)
 
 ---
 
 ## 🖥️ Tech Stack
 
+### Frontend
+
 <p align="left">
-  <img src="https://skillicons.dev/icons?i=react,vite,js,css,firebase,express,materialui" height="32" alt="Tech stack icons"/>
+  <img src="https://skillicons.dev/icons?i=react,vite,js,css,materialui,redux" height="32" alt="Frontend stack"/>
+  <img src="https://img.shields.io/badge/Framer%20Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion"/>
 </p>
 
-- **Frontend:** React, Vite, CSS Modules
-- **Backend/API:** Firebase (Auth, Firestore, Storage), Express (for payment API)
-- **Payments:** Stripe
-- **State Management:** React Context API
-- **Other:** Framer Motion, React Toastify, MUI, SweetAlert2
+- **React** (Vite, JSX, CSS Modules)
+- **Material UI** (MUI)
+- **Framer Motion** (animations)
+- **React Toastify**, **SweetAlert2** (notifications)
+- **React Context API** (state management)
 
----
+### Backend
+
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=nodejs,express,prisma,postgres,supabase,firebase,sqlite" height="32" alt="Backend stack"/>
+  <img src="https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe"/>
+</p>
+
+- **Node.js** & **Express** (API server)
+- **Prisma ORM** (type-safe DB access)
+- **PostgreSQL** (production DB)
+- **Supabase** (managed Postgres hosting)
+- **SQLite** (local dev DB)
+- **Firebase Admin SDK** (authentication)
+- **Stripe** (payments)
 
 ## ✨ Features
 
-- 🔐 **User Authentication** (Sign up, Sign in, Sign out with Firebase Auth)
-- 🛍️ **Product Browsing** (Browse, search, and filter products by category)
-- 🛒 **Shopping Cart** (Add, remove, and update items in real time)
-- 💳 **Checkout & Payment** (Stripe integration for secure payments)
-- 🚚 **Order Tracking** (View order history and delivery status)
-- 🎁 **Promo Codes** (Apply discount codes at checkout)
-- 📱 **Responsive Design** (Mobile-first, works on all devices)
-- 🌐 **Persistent State** (Cart and user info saved in localStorage)
-- ⚡ **Fast & Modern UI** (Built with Vite, React, and modular CSS)
+- 🔐 **Secure Authentication:** Firebase Auth (email/password, Google sign-in)
+- 🛍️ **Product Browsing:** Browse, search, and filter products by category
+- 🛒 **Shopping Cart:** Add, remove, and update items in real time
+- 💳 **Checkout & Payment:** Stripe integration for secure payments
+- 🚚 **Order Tracking:** View order history and delivery status (orders saved to backend DB)
+- 🎁 **Promo Codes & Discounts:** Apply discount codes at checkout
+- � **Shipping Details:** Full address, contact, and region support
+- 🧾 **Order History:** Modern, responsive grid with clear labels and truncated titles
+- 🧑‍💼 **User Account Page:** View and manage personal info, sign out, see order history
+- 🛡️ **Backend Auth Middleware:** All order/payment endpoints protected by Firebase token verification
+- 🗄️ **Persistent State:** Cart and user info saved in localStorage
+- 📱 **Responsive Design:** Mobile-first, works on all devices
+- ⚡ **Fast & Modern UI:** Built with Vite, React, modular CSS, and Framer Motion
+- 🧑‍💻 **Admin-Ready:** Backend and DB structure ready for admin features, user management, and analytics
 
 ---
 
-## 📝 How to Run Locally
+## �️ Local Development & Setup
 
-1. **Clone the repo:**
-   ```bash
-   git clone https://github.com/Tesfamichael12/Amazon-Clone.git
-   cd Amazon-Clone
-   ```
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Set up Firebase:**
-   - Create a Firebase project and add your config to `src/Utility/firebase.js`.
-4. **Start the dev server:**
-   ```bash
-   npm run dev
-   ```
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/Tesfamichael12/Amazon-Clone.git
+cd Amazon-Clone
+```
+
+### 2. Install dependencies (frontend)
+
+```bash
+npm install
+```
+
+### 3. Install dependencies (backend)
+
+```bash
+cd amazon-api
+npm install
+```
+
+### 4. Environment Variables
+
+#### Frontend (`.env` in root or `/src` if needed)
+
+```
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_firebase_app_id
+```
+
+#### Backend (`amazon-api/.env`)
+
+```
+STRIPE_SECRET_KEY=sk_test_...
+CLIENT_URL=http://localhost:5173
+PORT=5000
+DATABASE_URL=your_database_url # SQLite for dev, Postgres/Supabase for prod
+```
+
+> See `amazon-api/README.md` for full backend setup, including Prisma migrations and Supabase/Postgres deployment.
+
+### 5. Start the apps
+
+- **Frontend:**
+  ```bash
+  npm run dev
+  ```
+- **Backend:**
+  ```bash
+  cd amazon-api
+  npm start
+  ```
+
+---
 
 ---
 
@@ -63,6 +126,8 @@
 
 - Built by [Tesfamichael Tafere](https://tesfamichael-tafre.netlify.app/)
 - Inspired by Amazon.com UI/UX
+
+---
 
 ---
 
