@@ -25,7 +25,7 @@ const backendUrl =
   import.meta.env.VITE_REACT_APP_BACKEND_URL || "http://localhost:5000/api";
 
 const stripePromise = loadStripe(
-  import.meta.env.VITE_REACT_APP_STRIPE_PUBLISHABLE_KEY
+  "pk_test_51RfM7r98eUlvgtFkrLn7amI82y8m0PFXr7jFJasmWO5ZCEQ8Sqzvt9SwMrCkjKyS9p8B3tgIWGATRu1q9kKcoewH00YHcXHS1C"
 );
 
 async function saveOrderToBackend(orderData) {
