@@ -5,12 +5,9 @@ import { useCart } from "../../components/DataProvider/DataProvider";
 import { ACTIONS } from "../../Utility/actions";
 import Layout from "../../components/Layout";
 
-const getRandomOrderId = () => Math.floor(100000 + Math.random() * 900000);
-
 const Shipping = () => {
   const navigate = useNavigate();
   const { dispatch, shippingDetails } = useCart();
-  const [orderId] = useState(getRandomOrderId());
   const [form, setForm] = useState({
     country: shippingDetails?.country || "",
     name: shippingDetails?.name || "",
@@ -18,7 +15,6 @@ const Shipping = () => {
     email: shippingDetails?.email || "",
     address: shippingDetails?.address || "",
     pincode: shippingDetails?.pincode || "",
-    orderId: shippingDetails?.orderId || null,
   });
   const [error, setError] = useState("");
 
@@ -53,10 +49,10 @@ const Shipping = () => {
       setError("Please fill all required fields.");
       return;
     }
-    // Save orderId with shipping details
+    // Save shipping details (without orderId)
     dispatch({
       type: ACTIONS.SET_SHIPPING_DETAILS,
-      payload: { ...form, orderId: orderId },
+      payload: { ...form },
     });
     navigate("/payment");
   };
@@ -66,7 +62,7 @@ const Shipping = () => {
       <div className={styles.shippingContainer}>
         <div className={styles.shippingBox}>
           <h2>Shipping details</h2>
-          <div className={styles.orderId}>Order ID: {orderId}</div>
+
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.row}>
               <div className={styles.inputGroup}>
