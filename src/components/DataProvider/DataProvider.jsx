@@ -8,10 +8,12 @@ import React, {
 import { cartReducer, initialCartState } from "../../Utility/reducer.js";
 
 const CartContext = createContext();
+
 export function CartProvider({ children }) {
   let localCart = initialCartState.cart;
   let localShipping = initialCartState.shippingDetails;
   let localPromo = "";
+  let localUser = initialCartState.user;
   try {
     const stored = JSON.parse(localStorage.getItem("cart"));
     if (Array.isArray(stored)) {
@@ -23,19 +25,22 @@ export function CartProvider({ children }) {
     }
     const storedPromo = localStorage.getItem("promoCode");
     if (storedPromo) localPromo = storedPromo;
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) localUser = storedUser;
   } catch (e) {
     localCart = initialCartState.cart;
     localShipping = initialCartState.shippingDetails;
     localPromo = "";
+    localUser = initialCartState.user;
   }
   const [state, dispatch] = useReducer(cartReducer, {
     cart: localCart,
-    user: initialCartState.user,
+    user: localUser,
     shippingDetails: localShipping,
   });
   const [promoCode, setPromoCode] = useState(localPromo);
 
-  // Persist cart, shippingDetails, and promoCode to localStorage on change
+  // Persist cart, shippingDetails, promoCode, and user to localStorage on change
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(state.cart));
   }, [state.cart]);
@@ -52,6 +57,13 @@ export function CartProvider({ children }) {
       localStorage.removeItem("promoCode");
     }
   }, [promoCode]);
+  useEffect(() => {
+    if (state.user) {
+      localStorage.setItem("user", JSON.stringify(state.user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [state.user]);
 
   // subTotal, discount, totalAmount
   const subTotal = state.cart.reduce(

@@ -1,11 +1,11 @@
+
 import React from "react";
 
-const OrderMap = ({ address }) => {
-  let mapQuery = address && address.trim() !== "" ? address : null;
-
+const OrderMap = () => {
   const [userLocation, setUserLocation] = React.useState(null);
+
   React.useEffect(() => {
-    if (!mapQuery && navigator.geolocation) {
+    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           setUserLocation({
@@ -17,16 +17,11 @@ const OrderMap = ({ address }) => {
         { enableHighAccuracy: true, timeout: 5000 }
       );
     }
-  }, [mapQuery]);
+  }, []);
 
-  let mapSrc =
-    "https://maps.google.com/maps?q=World&t=&z=2&ie=UTF8&iwloc=&output=embed";
-  if (mapQuery) {
-    mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(
-      mapQuery
-    )}&t=&z=4&ie=UTF8&iwloc=&output=embed`;
-  } else if (userLocation) {
-    mapSrc = `https://maps.google.com/maps?q=${userLocation.lat},${userLocation.lng}&z=10&output=embed`;
+  let mapSrc = "https://maps.google.com/maps?q=World&t=&z=2&ie=UTF8&iwloc=&output=embed";
+  if (userLocation) {
+    mapSrc = `https://maps.google.com/maps?q=${userLocation.lat},${userLocation.lng}&z=12&output=embed`;
   }
 
   return (

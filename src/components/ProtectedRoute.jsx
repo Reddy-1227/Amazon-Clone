@@ -8,6 +8,10 @@ const ProtectedRoute = ({ children }) => {
   const { user } = useCart();
   const location = useLocation();
 
+  if (user === undefined) {
+    // Still loading, don't render anything yet
+    return null;
+  }
   if (!user) {
     return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   }
