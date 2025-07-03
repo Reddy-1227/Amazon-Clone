@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import Layout from "../../components/Layout";
 // import Footer from "../../components/Footer";
 import styles from "./cart.module.css";
@@ -14,16 +14,22 @@ const Cart = () => {
   const [promoMsg, setPromoMsg] = useState("");
   const [promoTimeout, setPromoTimeout] = useState(null);
 
-  const subTotal = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
+  const subTotal = useMemo(
+    () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [cart]
   );
   const delivery = 0;
-  const tax = subTotal > 0 ? Math.round(subTotal * 0.05 * 100) / 100 : 0;
-  const total = subTotal + delivery + tax - discount;
+  const tax = useMemo(
+    () => (subTotal > 0 ? Math.round(subTotal * 0.05 * 100) / 100 : 0),
+    [subTotal]
+  );
+  const total = useMemo(
+    () => subTotal + delivery + tax - discount,
+    [subTotal, delivery, tax, discount]
+  );
 
   // Coupon logic
-  const handleApplyPromo = () => {
+  const handleApplyPromo = useCallback(() => {
     if (promo.trim().toUpperCase() === "TESFAMICHAEL12") {
       const off = Math.round(subTotal * 0.22 * 100) / 100;
       setDiscount(off);
@@ -42,7 +48,7 @@ const Cart = () => {
       setPromoMsg("");
       if (promoTimeout) clearTimeout(promoTimeout);
     }
-  };
+  }, [promo, subTotal, promoTimeout]);
 
   React.useEffect(() => {
     if (promo.trim().toUpperCase() === "TESFAMICHAEL12") {

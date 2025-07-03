@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
@@ -55,6 +55,25 @@ function StripeCardForm({
   promoCode,
   onSuccess,
 }) {
+  // Memoize orderData to avoid unnecessary recalculation
+  const orderData = useMemo(
+    () => ({
+      items: cart.map((item) => ({
+        productId: item.productId || item.id,
+        title: item.title,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image || null,
+      })),
+      shippingDetails: shippingDetails || {},
+      totalAmount,
+      paymentStatus: "paid",
+      discount,
+      subTotal,
+      promoCode,
+    }),
+    [cart, shippingDetails, totalAmount, discount, subTotal, promoCode]
+  );
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);

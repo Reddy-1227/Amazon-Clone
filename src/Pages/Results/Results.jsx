@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Layout from "../../components/Layout";
 // import Footer from "../../components/Footer";
 import styles from "./results.module.css";
@@ -22,6 +22,18 @@ const Results = () => {
       .finally(() => setLoading(false));
   }, [categoryName]);
 
+  const productList = useMemo(
+    () =>
+      res && res.length > 0 ? (
+        res.map((product) => (
+          <ProductCard key={product.id || product._id} product={product} />
+        ))
+      ) : (
+        <p>No products found in this category.</p>
+      ),
+    [res]
+  );
+
   return (
     <Layout>
       <div className={styles.resultsWrapper}>
@@ -32,18 +44,7 @@ const Results = () => {
         {loading ? (
           <Spinner />
         ) : (
-          <div className={styles.productsGrid}>
-            {res && res.length > 0 ? (
-              res.map((product) => (
-                <ProductCard
-                  key={product.id || product._id}
-                  product={product}
-                />
-              ))
-            ) : (
-              <p>No products found in this category.</p>
-            )}
-          </div>
+          <div className={styles.productsGrid}>{productList}</div>
         )}
       </div>
       {/* <Footer /> */}
