@@ -1,4 +1,3 @@
-
 <p align="center" style="background:#f3f4f6;padding:20px 0;border-radius:12px;">
   <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo" width="200"/>
 </p>
@@ -19,7 +18,6 @@
 ## 🖥️ Tech Stack
 
 ### Frontend
-
 
 <p align="left">
   <img src="https://skillicons.dev/icons?i=react,vite,js,css,materialui,redux" height="32" alt="Frontend stack"/>
@@ -67,6 +65,21 @@
 - **Authentication & Functions:** [Firebase](https://firebase.google.com/) (Auth, Admin SDK, and optional serverless functions).
 
 ---
+
+## 🚦 Performance & SEO
+
+![alt text](/img/light-house-ranking.png)
+
+<ul>
+  <li><b>Excellent Lighthouse SEO score (100)</b> and strong accessibility (96)</li>
+  <li>Performance and Best Practices improved with <b>preconnect</b>, <b>preload</b>, and <b>optimized meta tags</b></li>
+  <li>Open Graph and Twitter meta tags for rich social sharing</li>
+  <li>robots.txt and meta description for search engine indexing</li>
+  <li>Production security headers (CSP, HSTS, XFO, COOP) via <code>vercel.json</code></li>
+  <li>Source maps enabled for production debugging</li>
+  <li>Critical images preloaded and Google Fonts optimized with <code>display=swap</code></li>
+  <li>Performance-optimized React code using <code>useMemo</code> and <code>useCallback</code> in key pages</li>
+</ul>
 
 ## ✨ Features
 
@@ -149,7 +162,6 @@ DATABASE_URL=your_database_url # SQLite for dev, Postgres/Supabase for prod
 ---
 
 ---
-
 
 ## 🙌 Credits
 
