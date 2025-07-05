@@ -328,45 +328,78 @@ function Header() {
       </div>
 
       {/* Responsive Mobile Menu (triggered by top-left hamburger) */}
-      {showMenu && (
-        <div className={styles.mobileMenu}>
-          <div className={styles.mobileMenuHeader}>
-            <FaUser className={styles.accountIcon} />
-            <h3>
-              Hello,{" "}
-              {user ? (
-                user.displayName || user.email
-              ) : (
-                <Link to="/auth/signin">Sign In</Link>
-              )}
-            </h3>
-          </div>
-          <Link to="/" className={styles.navLink}>
-            Home
-          </Link>
-          <span className={styles.navLink}>Shop by Department</span>
-          <Link to="/results" className={styles.navLink}>
-            Today's Deals
-          </Link>
-          <div className={styles.mobileMenuItem}>
-            <Link to="/orders" className={styles.navLink}>
-              Your Orders
-            </Link>
-          </div>
-          <div className={styles.mobileMenuItem}>
-            <span className={styles.navLink}>Language: EN</span>
-          </div>
-          <span className={styles.navLink}>Customer Service</span>
-          <span className={styles.navLink}>Settings</span>
-          <span
-            className={styles.navLink}
-            onClick={handleSignOut}
-            style={{ cursor: "pointer" }}
+      {/* Hamburger Mobile Menu Overlay */}
+      <div
+        className={`${styles.mobileMenu} ${
+          showMenu ? styles.mobileMenuOpen : ""
+        }`}
+        style={{ pointerEvents: showMenu ? "auto" : "none" }}
+      >
+        <div className={styles.mobileMenuHeader}>
+          <FaUser className={styles.accountIcon} />
+          <h3 style={{ flex: 1 }}>
+            Hello,{" "}
+            {user ? (
+              user.displayName || user.email
+            ) : (
+              <Link to="/auth/signin">Sign In</Link>
+            )}
+          </h3>
+          <button
+            className={styles.menuCloseBtn}
+            aria-label="Close menu"
+            onClick={() => setShowMenu(false)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "white",
+              fontSize: "1.5rem",
+              cursor: "pointer",
+            }}
           >
-            Sign Out
-          </span>
+            ×
+          </button>
         </div>
-      )}
+        <Link
+          to="/"
+          className={styles.navLink}
+          onClick={() => setShowMenu(false)}
+        >
+          Home
+        </Link>
+        <span className={styles.navLink}>Shop by Department</span>
+        <Link
+          to="/results"
+          className={styles.navLink}
+          onClick={() => setShowMenu(false)}
+        >
+          Today's Deals
+        </Link>
+        <div className={styles.mobileMenuItem}>
+          <Link
+            to="/orders"
+            className={styles.navLink}
+            onClick={() => setShowMenu(false)}
+          >
+            Your Orders
+          </Link>
+        </div>
+        <div className={styles.mobileMenuItem}>
+          <span className={styles.navLink}>Language: EN</span>
+        </div>
+        <span className={styles.navLink}>Customer Service</span>
+        <span className={styles.navLink}>Settings</span>
+        <span
+          className={styles.navLink}
+          onClick={() => {
+            handleSignOut();
+            setShowMenu(false);
+          }}
+          style={{ cursor: "pointer" }}
+        >
+          Sign Out
+        </span>
+      </div>
     </header>
   );
 }

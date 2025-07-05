@@ -1,3 +1,10 @@
+/* Ensure all links in the mobile menu are white and have no default link color */
+.mobileMenu a,
+.mobileMenu a:visited,
+.mobileMenu a:active {
+  color: #fff !important;
+  text-decoration: none !important;
+}
 .headerWrapper {
   width: 100%;
   background: #131921;
@@ -318,12 +325,28 @@ html {
   width: 80%;
   max-width: 300px;
   height: 100%;
-  background-color: #fff;
-  color: #111;
-  z-index: 1000;
+  background-color: #131921;
+  color: #fff;
+  z-index: 2001;
   padding-top: 0;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
   overflow-y: auto;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-100%);
+}
+
+.mobileMenuOpen {
+  display: block;
+  transform: translateX(0);
+}
+
+.menuCloseBtn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
 .mobileMenuHeader {
@@ -338,13 +361,14 @@ html {
 
 .mobileMenuItem {
   padding: 15px 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #232f3e;
+  color: #fff;
   cursor: pointer;
   font-size: 0.95rem;
 }
 
 .mobileMenuItem:hover {
-  background-color: #f0f0f0;
+  background-color: #232f3e;
 }
 
 .accountIcon {
@@ -362,7 +386,8 @@ html {
 .deliverToMobile {
   display: none;
   background-color: #37475a;
-  color: #fff;
+  color: #fff !important;
+  color: #fff !important;
   padding: 8px 16px;
   font-size: 0.85rem;
   align-items: center;
