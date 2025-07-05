@@ -90,6 +90,7 @@
 .sizeRow {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   margin: 18px 0 8px 0;
   font-family: "Jost", sans-serif;
