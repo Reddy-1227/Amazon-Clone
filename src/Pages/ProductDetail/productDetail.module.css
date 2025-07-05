@@ -155,6 +155,8 @@
 @media (max-width: 900px) {
   .detailWrapper {
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 24px;
     padding: 24px 8px;
   }
