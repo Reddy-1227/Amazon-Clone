@@ -8,9 +8,6 @@ const { authenticateFirebaseToken } = require("./authMiddleware");
 router.post("/orders", authenticateFirebaseToken, async (req, res) => {
   console.log("Order endpoint hit. Body:", req.body);
   try {
-    // Clear any existing prepared statements to avoid conflicts
-    await prisma.$executeRaw`DEALLOCATE ALL;`;
-
     // userId is now taken from the verified Firebase token
     const firebaseUid = req.firebaseUid;
     const {
@@ -29,19 +26,48 @@ router.post("/orders", authenticateFirebaseToken, async (req, res) => {
     }
 
     // Ensure user exists in DB, create if not
-    let user = await prisma.user.findUnique({
-      where: { firebaseUid: firebaseUid },
-    });
+    // Try to find user by firebaseUid first (new schema), fallback to id (old schema)
+    let user;
+    try {
+      user = await prisma.user.findUnique({
+        where: { firebaseUid: firebaseUid },
+      });
+    } catch (error) {
+      // If firebaseUid field doesn't exist, try using id field (legacy)
+      console.log("Falling back to legacy user lookup by id");
+      try {
+        user = await prisma.user.findUnique({
+          where: { id: firebaseUid },
+        });
+      } catch (legacyError) {
+        console.log("Legacy lookup failed, user doesn't exist");
+        user = null;
+      }
+    }
 
     if (!user) {
-      user = await prisma.user.create({
-        data: {
-          firebaseUid: firebaseUid,
-          email: email || `${firebaseUid}@unknown.com`,
-          name: name || null,
-          password: "firebase_auth", // Required field
-        },
-      });
+      try {
+        // Try creating with new schema first
+        user = await prisma.user.create({
+          data: {
+            firebaseUid: firebaseUid,
+            email: email || `${firebaseUid}@unknown.com`,
+            name: name || null,
+            password: "firebase_auth", // Required field
+          },
+        });
+      } catch (error) {
+        // If new schema fails, try legacy schema
+        console.log("Falling back to legacy user creation");
+        user = await prisma.user.create({
+          data: {
+            id: firebaseUid,
+            email: email || `${firebaseUid}@unknown.com`,
+            name: name || null,
+            password: "firebase_auth", // Required field
+          },
+        });
+      }
     }
     // Store shippingDetails as JSON string in address field
     const order = await prisma.order.create({
@@ -79,8 +105,19 @@ router.get("/orders", authenticateFirebaseToken, async (req, res) => {
   try {
     const firebaseUid = req.firebaseUid;
 
-    // Find user by Firebase UID first
-    const user = await prisma.user.findUnique({ where: { firebaseUid } });
+    // Find user by Firebase UID first (new schema), fallback to id (old schema)
+    let user;
+    try {
+      user = await prisma.user.findUnique({ where: { firebaseUid } });
+    } catch (error) {
+      // Fallback to legacy schema
+      try {
+        user = await prisma.user.findUnique({ where: { id: firebaseUid } });
+      } catch (legacyError) {
+        user = null;
+      }
+    }
+    
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
