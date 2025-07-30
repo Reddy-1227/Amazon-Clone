@@ -7,6 +7,11 @@ const router = express.Router();
 const { authenticateFirebaseToken } = require("./authMiddleware");
 router.post("/orders", authenticateFirebaseToken, async (req, res) => {
   console.log("Order endpoint hit. Body:", req.body);
+  
+  // Create a new Prisma client for this request to avoid prepared statement conflicts
+  const { PrismaClient } = require("@prisma/client");
+  const requestPrisma = new PrismaClient();
+  
   try {
     // userId is now taken from the verified Firebase token
     const firebaseUid = req.firebaseUid;
@@ -29,14 +34,14 @@ router.post("/orders", authenticateFirebaseToken, async (req, res) => {
     // Try to find user by firebaseUid first (new schema), fallback to id (old schema)
     let user;
     try {
-      user = await prisma.user.findUnique({
+      user = await requestPrisma.user.findUnique({
         where: { firebaseUid: firebaseUid },
       });
     } catch (error) {
       // If firebaseUid field doesn't exist, try using id field (legacy)
       console.log("Falling back to legacy user lookup by id");
       try {
-        user = await prisma.user.findUnique({
+        user = await requestPrisma.user.findUnique({
           where: { id: firebaseUid },
         });
       } catch (legacyError) {
@@ -48,29 +53,38 @@ router.post("/orders", authenticateFirebaseToken, async (req, res) => {
     if (!user) {
       try {
         // Try creating with new schema first
-        user = await prisma.user.create({
+        user = await requestPrisma.user.create({
           data: {
             firebaseUid: firebaseUid,
             email: email || `${firebaseUid}@unknown.com`,
             name: name || null,
-            password: "firebase_auth", // Required field
           },
         });
       } catch (error) {
-        // If new schema fails, try legacy schema
+        // If new schema fails, try legacy schema (minimal fields only)
         console.log("Falling back to legacy user creation");
-        user = await prisma.user.create({
-          data: {
-            id: firebaseUid,
-            email: email || `${firebaseUid}@unknown.com`,
-            name: name || null,
-            password: "firebase_auth", // Required field
-          },
-        });
+        try {
+          user = await requestPrisma.user.create({
+            data: {
+              id: firebaseUid,
+              email: email || `${firebaseUid}@unknown.com`,
+              name: name || null,
+            },
+          });
+        } catch (minimalError) {
+          // If even that fails, try with just email
+          console.log("Falling back to minimal user creation");
+          user = await requestPrisma.user.create({
+            data: {
+              email: email || `${firebaseUid}@unknown.com`,
+              name: name || null,
+            },
+          });
+        }
       }
     }
     // Store shippingDetails as JSON string in address field
-    const order = await prisma.order.create({
+    const order = await requestPrisma.order.create({
       data: {
         userId: user.id, // using the generated UUID, not the Firebase UID
         total: totalAmount,
@@ -97,6 +111,9 @@ router.post("/orders", authenticateFirebaseToken, async (req, res) => {
     res
       .status(500)
       .json({ error: "Failed to create order", details: err.message });
+  } finally {
+    // Clean up the request-specific Prisma client
+    await requestPrisma.$disconnect();
   }
 });
 
