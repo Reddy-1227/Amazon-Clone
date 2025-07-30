@@ -35,3 +35,16 @@ CREATE TABLE IF NOT EXISTS "OrderItem" (
     image TEXT,
     CONSTRAINT fk_order FOREIGN KEY("orderId") REFERENCES "Order"(id) ON DELETE CASCADE
 );
+
+
+-- Add firebaseUid column to the deployed database
+ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "firebaseUid" VARCHAR(255);
+
+-- Create unique index
+CREATE UNIQUE INDEX IF NOT EXISTS "User_firebaseUid_key" ON "User"("firebaseUid");
+
+-- Update existing records to have firebaseUid same as id (for legacy data)
+UPDATE "User" SET "firebaseUid" = "id" WHERE "firebaseUid" IS NULL;
+
+-- Make firebaseUid NOT NULL after updating
+ALTER TABLE "User" ALTER COLUMN "firebaseUid" SET NOT NULL;
