@@ -129,7 +129,7 @@ const Orders = () => {
                   </div>
                   <div className={styles.orderSummaryBlock}>
                     <div className={styles.orderSummaryRow}>
-                      <span>Subtotal:</span>
+                      <span>Total:</span>
                       <span>${order.subTotal?.toFixed(2) ?? "0.00"}</span>
                     </div>
                     {order.discount > 0 && (
@@ -141,12 +141,6 @@ const Orders = () => {
                         <span>- ${order.discount.toFixed(2)}</span>
                       </div>
                     )}
-                    <div className={styles.orderSummaryRow}>
-                      <span>Total:</span>
-                      <span className={styles.orderTotal}>
-                        ${order.totalAmount?.toFixed(2) || "0.00"}
-                      </span>
-                    </div>
                   </div>
                   <div className={styles.orderMap}>
                     <OrderMap address={order.shippingDetails?.address} />
