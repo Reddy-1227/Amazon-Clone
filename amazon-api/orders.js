@@ -6,9 +6,13 @@ const router = express.Router();
 // Create a new order (called from payment endpoint, requires Firebase auth)
 const { authenticateFirebaseToken } = require("./authMiddleware");
 router.post("/orders", authenticateFirebaseToken, async (req, res) => {
+  console.log("Order endpoint hit. Body:", req.body);
   try {
+    // Clear any existing prepared statements to avoid conflicts
+    await prisma.$executeRaw`DEALLOCATE ALL;`;
+
     // userId is now taken from the verified Firebase token
-    const userId = req.firebaseUid;
+    const firebaseUid = req.firebaseUid;
     const {
       totalAmount,
       paymentStatus,
@@ -20,26 +24,31 @@ router.post("/orders", authenticateFirebaseToken, async (req, res) => {
       subTotal,
       promoCode,
     } = req.body;
-    if (!userId || !items || !Array.isArray(items) || items.length === 0) {
+    if (!firebaseUid || !items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "Missing required order data." });
     }
+
     // Ensure user exists in DB, create if not
-    let user = await prisma.user.findUnique({ where: { id: userId } });
+    let user = await prisma.user.findUnique({
+      where: { firebaseUid: firebaseUid },
+    });
+
     if (!user) {
       user = await prisma.user.create({
         data: {
-          id: userId,
-          email: email || `${userId}@unknown.com`,
+          firebaseUid: firebaseUid,
+          email: email || `${firebaseUid}@unknown.com`,
           name: name || null,
+          password: "firebase_auth", // Required field
         },
       });
     }
     // Store shippingDetails as JSON string in address field
     const order = await prisma.order.create({
       data: {
-        userId,
-        totalAmount,
-        paymentStatus,
+        userId: user.id, // using the generated UUID, not the Firebase UID
+        total: totalAmount,
+        status: paymentStatus,
         address: shippingDetails ? JSON.stringify(shippingDetails) : "",
         discount: discount ?? 0,
         subTotal: subTotal ?? 0,
@@ -68,9 +77,16 @@ router.post("/orders", authenticateFirebaseToken, async (req, res) => {
 // Get all orders for the authenticated user
 router.get("/orders", authenticateFirebaseToken, async (req, res) => {
   try {
-    const userId = req.firebaseUid;
+    const firebaseUid = req.firebaseUid;
+
+    // Find user by Firebase UID first
+    const user = await prisma.user.findUnique({ where: { firebaseUid } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     const orders = await prisma.order.findMany({
-      where: { userId },
+      where: { userId: user.id },
       include: { items: true },
       orderBy: { createdAt: "desc" },
     });
